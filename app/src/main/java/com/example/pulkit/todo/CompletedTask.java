@@ -29,6 +29,7 @@ public class CompletedTask extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_completed_task);
+        setTitle("Finished Task");
 
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mtodo = new ArrayList<>();
