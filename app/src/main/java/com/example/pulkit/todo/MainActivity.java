@@ -65,152 +65,152 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
-                    if (flag) {
-                        flag = !flag;
-                        TodoList.get(position).lastclicked = 0;
-                        if (visible) {
-                            view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryDark));
-                            visible = !visible;
-                            binding.fab.setVisibility(View.INVISIBLE);
-                            binding.tasklayout.setVisibility(View.VISIBLE);
-                            binding.taskeditbtn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    TodoList.get(position).lastclicked = -1;
-                                    flag = !flag;
-                                    view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
-                                    visible = !visible;
-                                    binding.fab.setVisibility(View.VISIBLE);
-                                    binding.tasklayout.setVisibility(View.INVISIBLE);
-                                    Intent i = new Intent(MainActivity.this, TodoDetailActivity.class);
-                                    i.putExtra(IntentConstants.TODO_ID, TodoList.get(position).id);
-                                    startActivityForResult(i, UPDATE_TODO);
-                                }
-                            });
-                            binding.taskdonebtn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    TodoList.get(position).lastclicked = -1;
-                                    flag = !flag;
-                                    view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
-                                    visible = !visible;
-                                    binding.fab.setVisibility(View.VISIBLE);
-                                    binding.tasklayout.setVisibility(View.INVISIBLE);
-                                    TodoOpenHelper todoopenhelper = TodoOpenHelper.getTodoOpenHelperInstance(MainActivity.this);
-                                    SQLiteDatabase database = todoopenhelper.getReadableDatabase();
-                                    ContentValues cv = new ContentValues();
-                                    cv.put(TodoOpenHelper.TODO_ISCHECKED, "true");
-                                    database.update(TodoOpenHelper.TODO_TABLE_NAME, cv, TodoOpenHelper.TODO_ID + "=" + TodoList.get(position).id, null);
-                                    alarmCancel(TodoList.get(position).id);
-                                    Toast.makeText(MainActivity.this, "Task Finished", Toast.LENGTH_SHORT).show();
-                                    updatetodolist();
+                if (flag) {
+                    flag = !flag;
+                    TodoList.get(position).lastclicked = 0;
+                    if (visible) {
+                        view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryDark));
+                        visible = !visible;
+                        binding.fab.setVisibility(View.INVISIBLE);
+                        binding.tasklayout.setVisibility(View.VISIBLE);
+                        binding.taskeditbtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                TodoList.get(position).lastclicked = -1;
+                                flag = !flag;
+                                view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
+                                visible = !visible;
+                                binding.fab.setVisibility(View.VISIBLE);
+                                binding.tasklayout.setVisibility(View.INVISIBLE);
+                                Intent i = new Intent(MainActivity.this, TodoDetailActivity.class);
+                                i.putExtra(IntentConstants.TODO_ID, TodoList.get(position).id);
+                                startActivityForResult(i, UPDATE_TODO);
+                            }
+                        });
+                        binding.taskdonebtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                TodoList.get(position).lastclicked = -1;
+                                flag = !flag;
+                                view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
+                                visible = !visible;
+                                binding.fab.setVisibility(View.VISIBLE);
+                                binding.tasklayout.setVisibility(View.INVISIBLE);
+                                TodoOpenHelper todoopenhelper = TodoOpenHelper.getTodoOpenHelperInstance(MainActivity.this);
+                                SQLiteDatabase database = todoopenhelper.getReadableDatabase();
+                                ContentValues cv = new ContentValues();
+                                cv.put(TodoOpenHelper.TODO_ISCHECKED, "true");
+                                database.update(TodoOpenHelper.TODO_TABLE_NAME, cv, TodoOpenHelper.TODO_ID + "=" + TodoList.get(position).id, null);
+                                alarmCancel(TodoList.get(position).id);
+                                Toast.makeText(MainActivity.this, "Task Finished", Toast.LENGTH_SHORT).show();
+                                updatetodolist();
 
-                                }
-                            });
-                            binding.taskdelallbtn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    TodoList.get(position).lastclicked = -1;
-                                    flag = !flag;
-                                    visible = !visible;
-                                    binding.fab.setVisibility(View.VISIBLE);
-                                    binding.tasklayout.setVisibility(View.INVISIBLE);
-                                    TodoList.clear();
-                                    todoListAdapter.notifyDataSetChanged();
-                                    Snackbar.make(view, "Deleted Accidentally ??", BaseTransientBottomBar.LENGTH_LONG)
-                                            .setAction("Undo", new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View view) {
-                                                    updatetodolist();
+                            }
+                        });
+                        binding.taskdelallbtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                TodoList.get(position).lastclicked = -1;
+                                flag = !flag;
+                                visible = !visible;
+                                binding.fab.setVisibility(View.VISIBLE);
+                                binding.tasklayout.setVisibility(View.INVISIBLE);
+                                TodoList.clear();
+                                todoListAdapter.notifyDataSetChanged();
+                                Snackbar.make(view, "Deleted Accidentally ??", BaseTransientBottomBar.LENGTH_LONG)
+                                        .setAction("Undo", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                updatetodolist();
 
-                                                }
-                                            })
-                                            .addCallback(new Snackbar.Callback() {
-                                                @Override
-                                                public void onDismissed(Snackbar snackbar, int event) {
-                                                    if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
-                                                        TodoOpenHelper todoopenhelper = TodoOpenHelper.getTodoOpenHelperInstance(MainActivity.this);
-                                                        SQLiteDatabase database = todoopenhelper.getWritableDatabase();
-                                                        Cursor cursor;
-                                                        cursor = database.query(TodoOpenHelper.TODO_TABLE_NAME, null, TodoOpenHelper.TODO_ISCHECKED + "='false' ", null, null, null, null);
-                                                        while (cursor.moveToNext()) {
-                                                            int id = cursor.getInt(cursor.getColumnIndex(TodoOpenHelper.TODO_ID));
-                                                             alarmCancel(id);
-                                                            database.delete(TodoOpenHelper.TODO_TABLE_NAME, null, null);
-                                                        }
+                                            }
+                                        })
+                                        .addCallback(new Snackbar.Callback() {
+                                            @Override
+                                            public void onDismissed(Snackbar snackbar, int event) {
+                                                if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
+                                                    TodoOpenHelper todoopenhelper = TodoOpenHelper.getTodoOpenHelperInstance(MainActivity.this);
+                                                    SQLiteDatabase database = todoopenhelper.getWritableDatabase();
+                                                    Cursor cursor;
+                                                    cursor = database.query(TodoOpenHelper.TODO_TABLE_NAME, null, TodoOpenHelper.TODO_ISCHECKED + "='false' ", null, null, null, null);
+                                                    while (cursor.moveToNext()) {
+                                                        int id = cursor.getInt(cursor.getColumnIndex(TodoOpenHelper.TODO_ID));
+                                                        alarmCancel(id);
+                                                        database.delete(TodoOpenHelper.TODO_TABLE_NAME, null, null);
                                                     }
                                                 }
-                                            })
-                                            .show();
-                                }
-                            });
-                            binding.taskdelbtn.setOnClickListener(new View.OnClickListener()
+                                            }
+                                        })
+                                        .show();
+                            }
+                        });
+                        binding.taskdelbtn.setOnClickListener(new View.OnClickListener()
 
-                            {
-                                @Override
-                                public void onClick(View v) {
-                                    TodoList.get(position).lastclicked = -1;
-                                    flag = !flag;
-                                    HashMap<String, String> tableRowid = new HashMap<>();
-                                    TodoOpenHelper todoopenhelper = TodoOpenHelper.getTodoOpenHelperInstance(MainActivity.this);
-                                    tableRowid.put(TodoOpenHelper.TODO_TABLE_NAME, TodoOpenHelper.TODO_ID + "=" + TodoList.get(position).id);
-                                    final RestorableSQLiteDatabase database = RestorableSQLiteDatabase.getInstance(todoopenhelper, tableRowid);
-                                    database.delete(TodoOpenHelper.TODO_TABLE_NAME, TodoOpenHelper.TODO_ID + "=" + TodoList.get(position).id, null, "DELETION TAG");
-                                    updatetodolist();
-                                    Snackbar.make(view, "Deleted Accidentally ??", BaseTransientBottomBar.LENGTH_LONG)
-                                            .setAction("Undo", new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View view) {
-                                                    database.restore("DELETION TAG");
-                                                    updatetodolist();
+                        {
+                            @Override
+                            public void onClick(View v) {
+                                TodoList.get(position).lastclicked = -1;
+                                flag = !flag;
+                                HashMap<String, String> tableRowid = new HashMap<>();
+                                TodoOpenHelper todoopenhelper = TodoOpenHelper.getTodoOpenHelperInstance(MainActivity.this);
+                                tableRowid.put(TodoOpenHelper.TODO_TABLE_NAME, TodoOpenHelper.TODO_ID + "=" + TodoList.get(position).id);
+                                final RestorableSQLiteDatabase database = RestorableSQLiteDatabase.getInstance(todoopenhelper, tableRowid);
+                                database.delete(TodoOpenHelper.TODO_TABLE_NAME, TodoOpenHelper.TODO_ID + "=" + TodoList.get(position).id, null, "DELETION TAG");
+                                updatetodolist();
+                                Snackbar.make(view, "Deleted Accidentally ??", BaseTransientBottomBar.LENGTH_LONG)
+                                        .setAction("Undo", new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                database.restore("DELETION TAG");
+                                                updatetodolist();
 
+                                            }
+                                        })
+                                        .addCallback(new Snackbar.Callback() {
+                                            @Override
+                                            public void onDismissed(Snackbar snackbar, int event) {
+                                                if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
+                                                    alarmCancel(TodoList.get(position).id);
                                                 }
-                                            })
-                                            .addCallback(new Snackbar.Callback() {
-                                                @Override
-                                                public void onDismissed(Snackbar snackbar, int event) {
-                                                    if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
-                                                        alarmCancel(TodoList.get(position).id);
-                                                    }
-                                                }
-                                            })
-                                            .show();
-                                    view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
-                                    visible = !visible;
-                                    binding.fab.setVisibility(View.VISIBLE);
-                                    binding.tasklayout.setVisibility(View.INVISIBLE);
+                                            }
+                                        })
+                                        .show();
+                                view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
+                                visible = !visible;
+                                binding.fab.setVisibility(View.VISIBLE);
+                                binding.tasklayout.setVisibility(View.INVISIBLE);
 
 
-                                }
-                            });
-                        } else if (!visible) {
-                            view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.Grey));
-                            visible = !visible;
-                            binding.fab.setVisibility(View.VISIBLE);
-                            binding.tasklayout.setVisibility(View.INVISIBLE);
-                        }
-                    }else if(!flag){
-                        if(TodoList.get(position).lastclicked == 0){
-                            TodoList.get(position).lastclicked = -1;
-                            flag=!flag;
-                            view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.Grey));
-                            visible = !visible;
-                            binding.fab.setVisibility(View.VISIBLE);
-                            binding.tasklayout.setVisibility(View.INVISIBLE);
-                        }
+                            }
+                        });
+                    } else if (!visible) {
+                        view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.Grey));
+                        visible = !visible;
+                        binding.fab.setVisibility(View.VISIBLE);
+                        binding.tasklayout.setVisibility(View.INVISIBLE);
                     }
+                } else if (!flag) {
+                    if (TodoList.get(position).lastclicked == 0) {
+                        TodoList.get(position).lastclicked = -1;
+                        flag = !flag;
+                        view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.Grey));
+                        visible = !visible;
+                        binding.fab.setVisibility(View.VISIBLE);
+                        binding.tasklayout.setVisibility(View.INVISIBLE);
+                    }
+                }
             }
 
         });
-        if (flag) {
-            binding.todoListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        binding.todoListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
 
-            {
-                @Override
-                public boolean onItemLongClick(AdapterView<?> parent, final View view,
-                                               final int position, long id) {
+        {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, final View view,
+                                           final int position, long id) {
+                if (flag) {
+                    flag = !flag;
                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
                     builder.setTitle("Confirm");
                     builder.setCancelable(false);
                     builder.setMessage("Are you sure you want to delete ??");
@@ -230,6 +230,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                         public void onClick(View view) {
                                             database.restore("DELETION TAG");
                                             updatetodolist();
+
 
                                         }
                                     })
@@ -259,8 +260,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     dialog.show();
                     return true;
                 }
-            });
-        }
+
+                return true;
+
+
+            }
+
+        });
+
 
         updatetodolist();
         binding.fab.setOnClickListener(new View.OnClickListener()
