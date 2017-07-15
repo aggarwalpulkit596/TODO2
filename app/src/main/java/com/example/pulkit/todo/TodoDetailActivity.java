@@ -153,6 +153,7 @@ public class TodoDetailActivity extends AppCompatActivity {
 //                        "Invalid Date/Time",
 //                        Toast.LENGTH_LONG).show();
 //                return false;}
+            if(newTime != null)
                 setAlarm(cal);
             setResult(RESULT_OK);
             finish();

@@ -61,11 +61,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         TodoList = new ArrayList<>();
         todoListAdapter = new TodoListAdapter(this, TodoList);
         binding.todoListView.setAdapter(todoListAdapter);
-        if (flag) {
             binding.todoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
                 @Override
                 public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+                    if(flag) {
                     flag = !flag;
                     if (visible) {
                         view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryDark));
@@ -107,6 +107,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         binding.taskdelallbtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                flag = !flag;
                                 visible = !visible;
                                 binding.fab.setVisibility(View.VISIBLE);
                                 binding.tasklayout.setVisibility(View.INVISIBLE);
@@ -139,7 +140,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                         .show();
                             }
                         });
-                        binding.taskdelbtn.setOnClickListener(new View.OnClickListener() {
+                        binding.taskdelbtn.setOnClickListener(new View.OnClickListener()
+
+                        {
                             @Override
                             public void onClick(View v) {
                                 flag = !flag;
@@ -182,65 +185,68 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         binding.tasklayout.setVisibility(View.INVISIBLE);
                     }
                 }
+            }
+
+        });
+        if(flag) {
+            binding.todoListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+
+            {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, final View view,
+                                               final int position, long id) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+
+                    builder.setTitle("Confirm");
+                    builder.setCancelable(false);
+                    builder.setMessage("Are you sure you want to delete ??");
+                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            HashMap<String, String> tableRowid = new HashMap<>();
+                            TodoOpenHelper todoopenhelper = TodoOpenHelper.getTodoOpenHelperInstance(MainActivity.this);
+                            tableRowid.put(TodoOpenHelper.TODO_TABLE_NAME, TodoOpenHelper.TODO_ID + "=" + TodoList.get(position).id);
+                            final RestorableSQLiteDatabase database = RestorableSQLiteDatabase.getInstance(todoopenhelper, tableRowid);
+                            database.delete(TodoOpenHelper.TODO_TABLE_NAME, TodoOpenHelper.TODO_ID + "=" + TodoList.get(position).id, null, "DELETION TAG");
+                            updatetodolist();
+                            Snackbar.make(view, "Deleted Accidentally ??", BaseTransientBottomBar.LENGTH_LONG)
+                                    .setAction("Undo", new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            database.restore("DELETION TAG");
+                                            updatetodolist();
+
+                                        }
+                                    })
+                                    .addCallback(new Snackbar.Callback() {
+                                        @Override
+                                        public void onDismissed(Snackbar snackbar, int event) {
+                                            if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
+                                                alarmCancel(TodoList.get(position).id);
+                                            }
+                                        }
+                                    })
+                                    .show();
+                            view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
+                            visible = !visible;
+                            binding.fab.setVisibility(View.VISIBLE);
+                            binding.tasklayout.setVisibility(View.INVISIBLE);
+                        }
+                    });
+                    builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                    return true;
+                }
             });
         }
-        binding.todoListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
-
-        {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, final View view,
-                                           final int position, long id) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-
-                builder.setTitle("Confirm");
-                builder.setCancelable(false);
-                builder.setMessage("Are you sure you want to delete ??");
-                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        HashMap<String, String> tableRowid = new HashMap<>();
-                        TodoOpenHelper todoopenhelper = TodoOpenHelper.getTodoOpenHelperInstance(MainActivity.this);
-                        tableRowid.put(TodoOpenHelper.TODO_TABLE_NAME, TodoOpenHelper.TODO_ID + "=" + TodoList.get(position).id);
-                        final RestorableSQLiteDatabase database = RestorableSQLiteDatabase.getInstance(todoopenhelper, tableRowid);
-                        database.delete(TodoOpenHelper.TODO_TABLE_NAME, TodoOpenHelper.TODO_ID + "=" + TodoList.get(position).id, null, "DELETION TAG");
-                        updatetodolist();
-                        Snackbar.make(view, "Deleted Accidentally ??", BaseTransientBottomBar.LENGTH_LONG)
-                                .setAction("Undo", new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        database.restore("DELETION TAG");
-                                        updatetodolist();
-
-                                    }
-                                })
-                                .addCallback(new Snackbar.Callback() {
-                                    @Override
-                                    public void onDismissed(Snackbar snackbar, int event) {
-                                        if (event == Snackbar.Callback.DISMISS_EVENT_TIMEOUT) {
-                                            alarmCancel(TodoList.get(position).id);
-                                        }
-                                    }
-                                })
-                                .show();
-                        view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
-                        visible = !visible;
-                        binding.fab.setVisibility(View.VISIBLE);
-                        binding.tasklayout.setVisibility(View.INVISIBLE);
-                    }
-                });
-                builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-
-                });
-                AlertDialog dialog = builder.create();
-                dialog.show();
-                return true;
-            }
-        });
 
         updatetodolist();
         binding.fab.setOnClickListener(new View.OnClickListener()
