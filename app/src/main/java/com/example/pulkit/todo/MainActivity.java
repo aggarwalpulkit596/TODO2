@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                                         cursor = database.query(TodoOpenHelper.TODO_TABLE_NAME, null, TodoOpenHelper.TODO_ISCHECKED + "='false' ", null, null, null, null);
                                                         while (cursor.moveToNext()) {
                                                             int id = cursor.getInt(cursor.getColumnIndex(TodoOpenHelper.TODO_ID));
-                                                            alarmCancel(id);
+                                                             alarmCancel(id);
                                                             database.delete(TodoOpenHelper.TODO_TABLE_NAME, null, null);
                                                         }
                                                     }
