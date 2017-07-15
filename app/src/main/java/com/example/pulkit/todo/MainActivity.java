@@ -61,12 +61,12 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         TodoList = new ArrayList<>();
         todoListAdapter = new TodoListAdapter(this, TodoList);
         binding.todoListView.setAdapter(todoListAdapter);
-        if(flag) {
+        if (flag) {
             binding.todoListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
                 @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
                 @Override
                 public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
+                    flag = !flag;
                     if (visible) {
                         view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryDark));
                         visible = !visible;
@@ -75,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         binding.taskeditbtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                flag = !flag;
                                 view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
                                 visible = !visible;
                                 binding.fab.setVisibility(View.VISIBLE);
@@ -87,6 +88,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                         binding.taskdonebtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                flag = !flag;
                                 view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.white));
                                 visible = !visible;
                                 binding.fab.setVisibility(View.VISIBLE);
@@ -137,11 +139,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                                         .show();
                             }
                         });
-                        binding.taskdelbtn.setOnClickListener(new View.OnClickListener()
-
-                        {
+                        binding.taskdelbtn.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                flag = !flag;
                                 HashMap<String, String> tableRowid = new HashMap<>();
                                 TodoOpenHelper todoopenhelper = TodoOpenHelper.getTodoOpenHelperInstance(MainActivity.this);
                                 tableRowid.put(TodoOpenHelper.TODO_TABLE_NAME, TodoOpenHelper.TODO_ID + "=" + TodoList.get(position).id);
