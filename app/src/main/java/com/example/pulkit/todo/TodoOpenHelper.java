@@ -36,7 +36,7 @@ public class TodoOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String query = "create table " + TODO_TABLE_NAME +" ( " + TODO_ID +
                 " integer primary key autoincrement, " + TODO_TITLE +" text, "
-                + TODO_DESCRIPTION + " text, "+ TODO_ISCHECKED + " text, " + TODO_CATEGORY+ " integer, " + TODO_PRIORITY+ " integer, "
+                + TODO_DESCRIPTION + " text, "+ TODO_ISCHECKED + " text default false, " + TODO_CATEGORY+ " integer, " + TODO_PRIORITY+ " integer, "
                 + TODO_TIME + " text, " + TODO_DATE + " text);";
 
         db.execSQL(query);

@@ -132,7 +132,6 @@ public class TodoDetailActivity extends AppCompatActivity {
             cv.put(TodoOpenHelper.TODO_CATEGORY, newCategory);
             cv.put(TodoOpenHelper.TODO_DATE, newDate);
             cv.put(TodoOpenHelper.TODO_TIME, newTime);
-            cv.put(TodoOpenHelper.TODO_ISCHECKED, "false");
             if (uid == -1)
                 database.insert(TodoOpenHelper.TODO_TABLE_NAME, null, cv);
             else {
