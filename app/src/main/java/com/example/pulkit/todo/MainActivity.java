@@ -191,6 +191,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             binding.tasklayout.setVisibility(View.INVISIBLE);
                         }
                     }
+                }else if(TodoList.get(position).lastclicked == 0){
+                    TodoList.get(position).lastclicked = -1;
                 }
             }
 
