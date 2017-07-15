@@ -232,7 +232,9 @@ public class TodoDetailActivity extends AppCompatActivity {
                         Calendar calendar = Calendar.getInstance();
                         calendar.set(year, month, day);
                         date = calendar.getTime().getTime();
-
+                        TodoDetailActivity.this.year = year;
+                        TodoDetailActivity.this.month = month;
+                        TodoDetailActivity.this.day = day;
                         // Setting date selected in the edit text
                         binding.todoDetailDateEditText.setText(day + "/" + (month + 1) + "/" + year);
                     }
