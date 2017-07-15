@@ -65,10 +65,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             @RequiresApi(api = Build.VERSION_CODES.GINGERBREAD)
             @Override
             public void onItemClick(AdapterView<?> parent, final View view, final int position, long id) {
-                if (TodoList.get(position).lastclicked == -1) {
-                    TodoList.get(position).lastclicked = 0;
                     if (flag) {
                         flag = !flag;
+                        TodoList.get(position).lastclicked = 0;
                         if (visible) {
                             view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorPrimaryDark));
                             visible = !visible;
@@ -190,10 +189,16 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                             binding.fab.setVisibility(View.VISIBLE);
                             binding.tasklayout.setVisibility(View.INVISIBLE);
                         }
+                    }else if(!flag){
+                        if(TodoList.get(position).lastclicked == 0){
+                            TodoList.get(position).lastclicked = -1;
+                            flag=!flag;
+                            view.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.Grey));
+                            visible = !visible;
+                            binding.fab.setVisibility(View.VISIBLE);
+                            binding.tasklayout.setVisibility(View.INVISIBLE);
+                        }
                     }
-                }else if(TodoList.get(position).lastclicked == 0){
-                    TodoList.get(position).lastclicked = -1;
-                }
             }
 
         });
